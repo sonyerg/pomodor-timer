@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [breakTime, setBreakTime] = useState(5);
+  const [sessionTime, setSessionTime] = useState(25);
+  const [timer, setTimer] = useState(sessionTime);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div id="pomodoro-timer">
+      <h1>Pomodoro Timer</h1>
+      <div className="label-container">
+        <div className="container">
+          <h3 id="break-label">Break Length</h3>
+          <div className="button-container">
+            <button id="break-increment">Increase</button>
+            <p id="break-length">{breakTime}</p>
+            <button id="break-decrement">Decrease</button>
+          </div>
+        </div>
+        <div className="container">
+          <h3 id="session-label">Session Length</h3>
+          <div className="button-container">
+            <button id="session-increment">Increase</button>
+            <p id="session-length">{sessionTime}</p>
+            <button id="session-decrement">Decrease</button>
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div id="timer">
+        <div className="timer-container">
+          <div id="timer-label">Session</div>
+          <div id="time-left">{timer}</div>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <div className="button-container">
+        <button id="start_stop">Start/Stop</button>
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
