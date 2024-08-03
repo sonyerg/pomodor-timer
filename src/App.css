@@ -9,7 +9,7 @@
   margin-top: 15%;
 }
 
-.label-container {
+.setters {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -17,11 +17,7 @@
   margin: 20px 0;
 }
 
-.container {
-  flex-direction: column;
-}
-
-.button-container {
+.setter-container {
   display: flex;
   flex-direction: row;
   justify-content: center;

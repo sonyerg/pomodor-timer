@@ -1,42 +1,69 @@
 import { useState } from "react";
+
 import "./App.css";
+import { DisplayState } from "./helpers";
+import TimeSetter from "./TimeSetter";
+import Display from "./Display";
+import AlarmSound from "./assets/AlarmSound.mp3";
+
+const defaultBreakTime = 5 * 60;
+const defaultSessionTime = 25 * 60;
+const min = 60;
+const max = 60 * 60;
+const interval = 60;
 
 function App() {
-  const [breakTime, setBreakTime] = useState(5);
-  const [sessionTime, setSessionTime] = useState(25);
-  const [timer, setTimer] = useState(sessionTime);
+  const [breakTime, setBreakTime] = useState(defaultBreakTime);
+  const [sessionTime, setSessionTime] = useState(defaultSessionTime);
+  const [displayState, setDisplayState] = useState<DisplayState>({
+    time: sessionTime,
+    timeType: "Session",
+    timerRunning: false,
+  });
+
+  function reset() {
+    setBreakTime(defaultBreakTime);
+    setSessionTime(defaultSessionTime);
+    setDisplayState({
+      time: sessionTime,
+      timeType: "Session",
+      timerRunning: false,
+    });
+
+    const audio = document.getElementById("beep") as HTMLAudioElement;
+    audio.pause();
+    audio.currentTime = 0;
+  }
 
   return (
     <div id="pomodoro-timer">
       <h1>Pomodoro Timer</h1>
-      <div className="label-container">
+      <div className="setters">
         <div className="container">
           <h3 id="break-label">Break Length</h3>
-          <div className="button-container">
-            <button id="break-increment">Increase</button>
-            <p id="break-length">{breakTime}</p>
-            <button id="break-decrement">Decrease</button>
-          </div>
+          <TimeSetter
+            type="break"
+            time={breakTime}
+            max={max}
+            min={min}
+            interval={interval}
+            setTime={setBreakTime}
+          />
         </div>
         <div className="container">
           <h3 id="session-label">Session Length</h3>
-          <div className="button-container">
-            <button id="session-increment">Increase</button>
-            <p id="session-length">{sessionTime}</p>
-            <button id="session-decrement">Decrease</button>
-          </div>
+          <TimeSetter
+            type="session"
+            time={sessionTime}
+            max={max}
+            min={min}
+            interval={interval}
+            setTime={setSessionTime}
+          />
         </div>
       </div>
-      <div id="timer">
-        <div className="timer-container">
-          <div id="timer-label">Session</div>
-          <div id="time-left">{timer}</div>
-        </div>
-      </div>
-      <div className="button-container">
-        <button id="start_stop">Start/Stop</button>
-        <button id="reset">Reset</button>
-      </div>
+      <Display displayState={displayState} reset={reset} startStop={() => {}} />
+      <audio id="beep" src={AlarmSound} />
     </div>
   );
 }
