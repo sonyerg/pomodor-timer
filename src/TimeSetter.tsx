@@ -18,17 +18,17 @@ export default function TimeSetter({
   return (
     <div className="setter-container">
       <button
-        id={`${type}-increment`}
+        id={`${type}-decrement`}
         onClick={() => (time > min ? setTime(time - interval) : null)}
       >
-        Increase
+        –
       </button>
       <p id={`${type}-length`}>{time / interval}</p>
       <button
         id={`${type}-increment`}
         onClick={() => (time < max ? setTime(time + interval) : null)}
       >
-        Decrease
+        +
       </button>
     </div>
   );

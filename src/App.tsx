@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./App.css";
 import { DisplayState } from "./helpers";
@@ -21,18 +21,74 @@ function App() {
     timerRunning: false,
   });
 
+  useEffect(() => {
+    let timerID: number;
+    if (!displayState.timerRunning) return;
+
+    if (displayState.timerRunning) {
+      timerID = window.setInterval(decrementDisplay, 1000);
+    }
+
+    return () => {
+      window.clearInterval(timerID);
+    };
+  }, [displayState.timerRunning]);
+
+  useEffect(() => {
+    if (displayState.time === 0) {
+      const audio = document.getElementById("beep") as HTMLAudioElement;
+      audio.currentTime = 2;
+      audio.play().catch((err) => console.log(err));
+      setDisplayState((prev) => ({
+        ...prev,
+        timeType: prev.timeType === "Session" ? "Break" : "Session",
+        time: prev.timeType === "Session" ? breakTime : sessionTime,
+      }));
+    }
+  }, [displayState, breakTime, sessionTime]);
+
   function reset() {
     setBreakTime(defaultBreakTime);
     setSessionTime(defaultSessionTime);
     setDisplayState({
-      time: sessionTime,
+      time: defaultSessionTime,
       timeType: "Session",
       timerRunning: false,
     });
-
     const audio = document.getElementById("beep") as HTMLAudioElement;
     audio.pause();
     audio.currentTime = 0;
+  }
+
+  function startStop() {
+    setDisplayState((prev) => ({
+      ...prev,
+      timerRunning: !prev.timerRunning,
+    }));
+  }
+
+  function changeBreakTime(time: number) {
+    if (displayState.timerRunning) return;
+
+    setBreakTime(time);
+  }
+
+  function changeSessionTime(time: number) {
+    if (displayState.timerRunning) return;
+
+    setSessionTime(time);
+    setDisplayState({
+      time: time,
+      timeType: "Session",
+      timerRunning: false,
+    });
+  }
+
+  function decrementDisplay() {
+    setDisplayState((prev) => ({
+      ...prev,
+      time: prev.time - 1,
+    }));
   }
 
   return (
@@ -47,7 +103,7 @@ function App() {
             max={max}
             min={min}
             interval={interval}
-            setTime={setBreakTime}
+            setTime={changeBreakTime}
           />
         </div>
         <div className="container">
@@ -58,11 +114,15 @@ function App() {
             max={max}
             min={min}
             interval={interval}
-            setTime={setSessionTime}
+            setTime={changeSessionTime}
           />
         </div>
       </div>
-      <Display displayState={displayState} reset={reset} startStop={() => {}} />
+      <Display
+        displayState={displayState}
+        reset={reset}
+        startStop={startStop}
+      />
       <audio id="beep" src={AlarmSound} />
     </div>
   );
